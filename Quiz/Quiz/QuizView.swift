@@ -1,8 +1,8 @@
 //
 //  QuizView.swift
-//  QuizApp
+//  Quiz
 //
-//  Created by StudentAM on 4/11/24.
+//  Created by StudentAM on 4/12/24.
 //
 
 import SwiftUI
@@ -35,31 +35,52 @@ struct QuizView: View {
     ]
     
     @State private var currentQuestion: Int = 0
+    
     @State private var isCorrect: Bool = false
     
+    
+    @State private var answerIsChosen: Bool = false
+    
+    
+    @Environment(\.dismiss) var dismiss
+    
+    @State private var numberOfQuestions: Int = 1
+    
+    @State var finalScore: Int = 0
+    
+    @State private var gameFinshed: Bool = false
+    
     var body: some View {
-        ZStack {
-            
-            Image("quizBackground")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .ignoresSafeArea()
-            
-            VStack {
+        NavigationView {
+            ZStack {
                 
-//                Spacer()
-//                
-                Text("Score: \(score)")
-                    .font(.system(size: 40))
-                    .foregroundColor(.white)
-                    .bold()
-                
-                Spacer()
-                
+                Image("quizBackground")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .ignoresSafeArea()
                 
                 VStack {
-                    
                   
+                    
+
+                    Text("Score: \(score)")
+                        .font(.system(size: 40))
+                        .foregroundColor(.white)
+                        .bold()
+                    
+                    Spacer()
+                    
+                    
+                    VStack {
+                        
+                        
+                        Text("Question \(numberOfQuestions)  of 10")
+                            .padding()
+                            .background()
+                            .cornerRadius(10)
+                            .foregroundColor(.black)
+                        
+                        
                         
                         Text("\(questions[currentQuestion].question)")
                             .padding()
@@ -67,99 +88,134 @@ struct QuizView: View {
                             .cornerRadius(10)
                             .frame(width: 350, height: 200)
                             .foregroundColor(.black)
-                           
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        Spacer()
+                        
+                        VStack {
                             
-                    
-                    
-                 
-                    
-                    
-                    Spacer()
-                    
-                    VStack {
-                        
-                        
-                        ForEach(questions[currentQuestion].options, id: \.self) { answer in
-                            Button(action: {
-                                checkAnswer(questions[currentQuestion], answer)
-                          
-                                
-                            }, label: {
-                                Text("\(answer)")
-                                    .frame(width: 320, height: 50)
-                                    .cornerRadius(18)
-                                    .background(isCorrect == true ? Color.green : Color.clear)
-//                                    .background(.white)
-                                  
-                                    .foregroundColor(.black)
-                                
-                                
-//
-//                                if questions[currentQuestion].answer == answer {
-//                                    Button(action: {
-//                                        
-//                                    }, label: {
-//                                        Text("Next Question")
-//                                        .padding()
-//                                        .background(.blue)
-//                                        .cornerRadius(10)
-//                                        .frame(width: 350, height: 200)
-//                                        .foregroundColor(.black)
-//                                    })
-//                                }
+                            
+                            ForEach(questions[currentQuestion].options, id: \.self) { answer in
+                                Button(action: {
+                                    checkAnswer(questions[currentQuestion], answer)
                                     
+                                    
+                                }, label: {
+                                    Text("\(answer)")
+                                        .frame(width: 320, height: 50)
+                                        .cornerRadius(18)
+                                        .background(.white)
+                                        .foregroundColor(.black)
+                                       
+                                    
+                                    
+                                    
+                                    
+                                })
+                               
+                                .background(isCorrect == true ? Color.green : Color.red)
+                                .padding()
+                                .disabled(answerIsChosen)
                                 
-                            })
-                            .background(isCorrect == true ? Color.green : Color.white)
-                            .padding()
-                       
+                                
+                                
+                                
+                                
+                            }
+                            
+                            HStack {
+                                if answerIsChosen {
+                                    Button(action: {
+                                        if numberOfQuestions < 10 {
+                                            currentQuestion += 1
+                                            numberOfQuestions += 1
+                                            answerIsChosen = false
+                                        } else {
+                                            gameFinshed = true
+                                        }
+                                        
+                                    }, label: {
+                                        
+                                        
+                                        
+                                        if numberOfQuestions == 10 {
+                                            Text("Last Question")
+                                                .padding()
+                                                .background(.white)
+                                                .cornerRadius(10)
+                                                //
+                                                .foregroundColor(.black)
+                                            
+                                        } else {
+                                            Text("Next Question")
+                                                .padding()
+                                                .background(.white)
+                                                .cornerRadius(10)
+                                                //
+                                                .foregroundColor(.black)
+                                        }
+                                        
+                                    })
+                                }
+                                
+                                
+                                if gameFinshed {
+                                    NavigationLink(destination: {
+                                        ScoreScreen(score: finalScore).navigationBarBackButtonHidden(true)
+                                    }, label: {
+                                        Text("Show Score")
+                                            .padding()
+                                            .background(.white)
+                                            .cornerRadius(10)
+                                            //
+                                            .foregroundColor(.black)
+                                    })
+                                }
+                            }
                             
                             
-                         
+                            Spacer()
                             
                         }
                         
                         
-//                        if questions[currentQuestion].answer == answer {
-                        Button(action: {
-                                currentQuestion += 1
-                            }, label: {
-                                Text("Next Question")
-                                .padding()
-                                .background(.white)
-                                .cornerRadius(10)
-//
-                                .foregroundColor(.black)
-                            })
-//                        }
-
-                        
-                        Spacer()
                         
                     }
                     
                     
-                        
                 }
-                
-                
             }
         }
     }
     
     func checkAnswer(_ question: Question, _ selectedOption: String) {
-        if question.answer == selectedOption {
+        
+        answerIsChosen = true
+        if answerIsChosen == false && question.answer == selectedOption {
             isCorrect = true
             score += 1
-            print("Answer is corrcert")
+            finalScore += 1
+            
         } else {
             isCorrect = false
+            answerIsChosen = false
+            score += 0
+            
         }
+        
+       
+        
     }
 }
 
 #Preview {
     QuizView()
 }
+
 
 
