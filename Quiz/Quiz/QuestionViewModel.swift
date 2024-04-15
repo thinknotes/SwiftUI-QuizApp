@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+//Create a struct for question to make it eaiser to write out questions and store the data
 struct Question {
     let question: String
     let options: [String]

@@ -9,8 +9,9 @@ import SwiftUI
 
 struct QuizView: View {
     @State private var score: Int = 0
+    //Create the var to track the score
     
-    
+    //Create the questions for the game
     let questions: [Question] = [
         //Question 1
         Question(question: "Which programming language is primarily used in conjunction with Swift for iOS app development?", options: ["Java", "JavaScript", "SwiftUI", "C++"], answer: "SwiftUI"),
@@ -34,26 +35,31 @@ struct QuizView: View {
         Question(question: "What IDE do you use to code with?", options: ["Visual Studio Code", "Repliet", "TextEditor", "Xcode"], answer: "Xcode")
     ]
     
+    //Keeps track of currentQuestion
     @State private var currentQuestion: Int = 0
     
+    //Check wheter the questions is right
     @State private var isCorrect: Bool = false
     
-    
+    //Check if the question is chosen
     @State private var answerIsChosen: Bool = false
     
-    
+    //Dismiss to the view
     @Environment(\.dismiss) var dismiss
     
+    //Keeps track of number of number of questions
     @State private var numberOfQuestions: Int = 1
     
+    //Keeps track of final score
     @State var finalScore: Int = 0
     
+    //Wheter game has finished
     @State private var gameFinshed: Bool = false
     
     var body: some View {
         NavigationView {
             ZStack {
-                
+                    //Uses the same quiz background
                 Image("quizBackground")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -62,7 +68,7 @@ struct QuizView: View {
                 VStack {
                   
                     
-
+                     //Shows the user score
                     Text("Score: \(score)")
                         .font(.system(size: 40))
                         .foregroundColor(.white)
@@ -73,7 +79,7 @@ struct QuizView: View {
                     
                     VStack {
                         
-                        
+                        //Shows how many number of questions left
                         Text("Question \(numberOfQuestions)  of 10")
                             .padding()
                             .background()
@@ -81,7 +87,7 @@ struct QuizView: View {
                             .foregroundColor(.black)
                         
                         
-                        
+                        //Shows the question to the user
                         Text("\(questions[currentQuestion].question)")
                             .padding()
                             .background()
@@ -99,8 +105,9 @@ struct QuizView: View {
                         
                         VStack {
                             
-                            
+                            // Uses ForEach to list all the options for the question
                             ForEach(questions[currentQuestion].options, id: \.self) { answer in
+                                //Uses a button to detrmine if the questions is right or wrong
                                 Button(action: {
                                     checkAnswer(questions[currentQuestion], answer)
                                     
@@ -117,18 +124,19 @@ struct QuizView: View {
                                     
                                     
                                 })
-                               
                                 .background(isCorrect == true ? Color.green : Color.red)
                                 .padding()
-                                .disabled(answerIsChosen)
-                                
+//                                .disabled(answerIsChosen)
+//                                
                                 
                                 
                                 
                                 
                             }
+                           
                             
                             HStack {
+                                //If answer is chosen and updates to the next question or ends game
                                 if answerIsChosen {
                                     Button(action: {
                                         if numberOfQuestions < 10 {
@@ -142,13 +150,12 @@ struct QuizView: View {
                                     }, label: {
                                         
                                         
-                                        
+                                        //If the number of qustions equalls 10 then instead of saying next question it will show last question
                                         if numberOfQuestions == 10 {
                                             Text("Last Question")
                                                 .padding()
                                                 .background(.white)
                                                 .cornerRadius(10)
-                                                //
                                                 .foregroundColor(.black)
                                             
                                         } else {
@@ -156,14 +163,13 @@ struct QuizView: View {
                                                 .padding()
                                                 .background(.white)
                                                 .cornerRadius(10)
-                                                //
                                                 .foregroundColor(.black)
                                         }
                                         
                                     })
                                 }
                                 
-                                
+                                //If the game finshed is true. It will shows a NavigationView that will show Score Screen
                                 if gameFinshed {
                                     NavigationLink(destination: {
                                         ScoreScreen(score: finalScore).navigationBarBackButtonHidden(true)
@@ -172,7 +178,6 @@ struct QuizView: View {
                                             .padding()
                                             .background(.white)
                                             .cornerRadius(10)
-                                            //
                                             .foregroundColor(.black)
                                     })
                                 }
@@ -193,9 +198,9 @@ struct QuizView: View {
         }
     }
     
+    //Create a function to check the answer. It will run if the user selects an answer and checks if the question for the answer is correct. Updates score only if answer is correct.
     func checkAnswer(_ question: Question, _ selectedOption: String) {
-        
-        answerIsChosen = true
+        print("DEBUG: Check answer function is running")
         if answerIsChosen == false && question.answer == selectedOption {
             isCorrect = true
             score += 1
@@ -208,7 +213,7 @@ struct QuizView: View {
             
         }
         
-       
+         answerIsChosen = true
         
     }
 }

@@ -11,6 +11,7 @@ struct ContentView: View {
     var body: some View {
         NavigationView  {
             ZStack {
+                    //Uses the same quiz background
                 Image("quizBackground")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
@@ -18,15 +19,17 @@ struct ContentView: View {
                 
                 VStack {
                     
-                    Spacer()
+                    Spacer()       //Uses spacer to put the view in the center
                     
+                    //The title text
                     Text("Quiz Time!!")
                         .font(.system(size: 60))
                         .foregroundColor(.white)
                         .bold()
                     
-                    Spacer()
+                    Spacer()       //Uses spacer to put the view in the center
                     
+                    //Create a Navigation link to show the game view
                     VStack {
                         NavigationLink(destination: QuizView(), label: {
                             Text("Begin")
@@ -43,7 +46,7 @@ struct ContentView: View {
                     }
                     
                     
-                    Spacer()
+                    Spacer()       //Uses spacer to put the view in the center
                 }
                 
                 
